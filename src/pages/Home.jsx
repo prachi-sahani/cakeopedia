@@ -15,7 +15,7 @@ export function Home() {
           One stop note taking destination
         </h2>
         <p className=" txt-md py-2 my-4">
-          Never miss a brilliant recipe, note it down with{" "}
+          Never miss a brilliant recipe, note it down with
           <strong className="txt-primary">Cakeopedia</strong>! Keep a track of
           all your orders at one place.
         </p>
