@@ -13,8 +13,8 @@ export function Login() {
   } = useAuth();
   const navigate = useNavigate();
   const initialFormData = {
-    lastName: "",
     email: "",
+    password:""
   };
   const initialFormErrors = {
     emailError: "",

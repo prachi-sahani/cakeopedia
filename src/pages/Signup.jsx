@@ -74,7 +74,11 @@ export function Signup() {
       signupForm.password === signupForm.confirmPassword &&
       emailRegex.test(signupForm.email)
     ) {
-      signupUser({ email: signupForm.email, password: signupForm.password });
+      signupUser({
+        email: signupForm.email,
+        password: signupForm.password,
+        name: `${signupForm.firstName} ${signupForm.lastName}`,
+      });
     }
   }
 

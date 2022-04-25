@@ -1,13 +1,13 @@
 import { useContext, useState, createContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { login, signup } from "../utilities/server-request";
+import { login, signup, updateUser } from "../utilities/server-request";
 import { useMessageHandling } from "./message-handling-context";
 
 const AuthContext = createContext();
 
 function AuthProvider({ children }) {
   const [authToken, setAuthToken] = useState(
-    localStorage.getItem("token") || ""
+    sessionStorage.getItem("token") || ""
   );
   const location = useLocation();
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ function AuthProvider({ children }) {
       const token = await login(data);
       setIsLoadingLoginAsGuest(false);
       setAuthToken(token.user.accessToken);
-      localStorage.setItem(
+      sessionStorage.setItem(
         "token",
         token.user.accessToken ? token.user.accessToken : ""
       );
@@ -51,7 +51,7 @@ function AuthProvider({ children }) {
       const token = await login(data);
       setIsLoadingLoginUser(false);
       setAuthToken(token.user.accessToken);
-      localStorage.setItem("token", token.user.accessToken);
+      sessionStorage.setItem("token", token.user.accessToken);
       const lastRoute = location?.state?.from?.pathname || "/notes";
       navigate(lastRoute);
     } catch (err) {
@@ -68,9 +68,10 @@ function AuthProvider({ children }) {
     try {
       setIsLoadingSignup(true);
       const token = await signup(data);
+      const user = await updateUser(data.name)
       setIsLoadingSignup(false);
       setAuthToken(token.user.accessToken);
-      localStorage.setItem("token", token.user.accessToken);
+      sessionStorage.setItem("token", token.user.accessToken);
       const lastRoute = location?.state?.from?.pathname || "/notes";
       navigate(lastRoute);
     } catch (err) {
@@ -83,7 +84,7 @@ function AuthProvider({ children }) {
     }
   }
   function logout() {
-    localStorage.setItem("token", "");
+    sessionStorage.setItem("token", "");
     setAuthToken("");
     navigate("/");
   }
