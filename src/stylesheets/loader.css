@@ -1,0 +1,5 @@
+/* temporary */
+.loadingMessage {
+  margin: 2rem auto;
+  min-height: calc(100vh - 15rem);
+}
