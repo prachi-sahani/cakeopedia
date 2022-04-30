@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Navbar } from "../components/Navbar";
+import { Navbar } from "../components";
 import { useAuth } from "../context/authorization-context";
 import "../stylesheets/login-signup.css";
 export function Login() {

@@ -1,20 +1,26 @@
-import { useContext, useState, createContext } from "react";
+import { useContext, useState, createContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { login, signup, updateUser } from "../utilities/server-request";
+import {
+  login,
+  logoutUser,
+  signup,
+  updateUser,
+} from "../utilities/server-request";
 import { useMessageHandling } from "./message-handling-context";
 
 const AuthContext = createContext();
 
 function AuthProvider({ children }) {
-  const [authToken, setAuthToken] = useState(
-    sessionStorage.getItem("token") || ""
-  );
+  const [authToken, setAuthToken] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoadingLoginAsGuest, setIsLoadingLoginAsGuest] = useState(false);
   const [isLoadingLoginUser, setIsLoadingLoginUser] = useState(false);
   const [isLoadingSignup, setIsLoadingSignup] = useState(false);
   const { showSnackbar } = useMessageHandling();
+  useEffect(() => {
+    setAuthToken(sessionStorage.getItem("uid") || "");
+  }, []);
   async function loginAsGuest() {
     try {
       setIsLoadingLoginAsGuest(true);
@@ -25,11 +31,8 @@ function AuthProvider({ children }) {
       };
       const token = await login(data);
       setIsLoadingLoginAsGuest(false);
-      setAuthToken(token.user.accessToken);
-      sessionStorage.setItem(
-        "token",
-        token.user.accessToken ? token.user.accessToken : ""
-      );
+      setAuthToken(token.user.uid);
+      sessionStorage.setItem("uid", token.user.uid ? token.user.uid : "");
       const lastRoute = location?.state?.from?.pathname || "/notes";
       navigate(lastRoute);
     } catch (err) {
@@ -50,8 +53,8 @@ function AuthProvider({ children }) {
       };
       const token = await login(data);
       setIsLoadingLoginUser(false);
-      setAuthToken(token.user.accessToken);
-      sessionStorage.setItem("token", token.user.accessToken);
+      setAuthToken(token.user.uid);
+      sessionStorage.setItem("uid", token.user.uid);
       const lastRoute = location?.state?.from?.pathname || "/notes";
       navigate(lastRoute);
     } catch (err) {
@@ -68,10 +71,10 @@ function AuthProvider({ children }) {
     try {
       setIsLoadingSignup(true);
       const token = await signup(data);
-      const user = await updateUser(data.name)
+      const user = await updateUser(data.name);
       setIsLoadingSignup(false);
-      setAuthToken(token.user.accessToken);
-      sessionStorage.setItem("token", token.user.accessToken);
+      setAuthToken(token.user.uid);
+      sessionStorage.setItem("uid", token.user.uid);
       const lastRoute = location?.state?.from?.pathname || "/notes";
       navigate(lastRoute);
     } catch (err) {
@@ -83,8 +86,9 @@ function AuthProvider({ children }) {
       );
     }
   }
-  function logout() {
-    sessionStorage.setItem("token", "");
+  async function logout() {
+    await logoutUser();
+    sessionStorage.setItem("uid", "");
     setAuthToken("");
     navigate("/");
   }
