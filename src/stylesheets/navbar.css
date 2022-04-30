@@ -61,4 +61,8 @@
     display: flex;
     margin: 1rem auto;
   }
+  
+  .view-toggle-icon{
+    display: none;
+  }
 }
