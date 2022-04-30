@@ -11,16 +11,14 @@ import { useMessageHandling } from "./message-handling-context";
 const AuthContext = createContext();
 
 function AuthProvider({ children }) {
-  const [authToken, setAuthToken] = useState("");
+  const [authToken, setAuthToken] = useState(sessionStorage.getItem("uid") || "");
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoadingLoginAsGuest, setIsLoadingLoginAsGuest] = useState(false);
   const [isLoadingLoginUser, setIsLoadingLoginUser] = useState(false);
   const [isLoadingSignup, setIsLoadingSignup] = useState(false);
   const { showSnackbar } = useMessageHandling();
-  useEffect(() => {
-    setAuthToken(sessionStorage.getItem("uid") || "");
-  }, []);
+
   async function loginAsGuest() {
     try {
       setIsLoadingLoginAsGuest(true);
