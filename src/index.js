@@ -4,6 +4,7 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/authorization-context";
 import { MessageHandlingProvider } from "./context/message-handling-context";
+import { DBdataProvider } from "./context/db-data-context";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -11,7 +12,9 @@ root.render(
     <BrowserRouter>
       <MessageHandlingProvider>
         <AuthProvider>
-          <App />
+          <DBdataProvider>
+            <App />
+          </DBdataProvider>
         </AuthProvider>
       </MessageHandlingProvider>
     </BrowserRouter>

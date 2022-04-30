@@ -1,0 +1,41 @@
+.note-footer .btn-icon {
+  font-size: 1.5rem;
+  padding: 4px;
+}
+
+.note-footer {
+  margin-top: auto;
+}
+
+.add-note {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+}
+
+.note-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.note {
+  flex-direction: column;
+  width: 90%;
+}
+
+.notes {
+  gap: 1rem;
+  margin: auto;
+}
+
+.note-content {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.25;
+  padding: 0 0.5rem;
+  cursor: pointer;
+}
