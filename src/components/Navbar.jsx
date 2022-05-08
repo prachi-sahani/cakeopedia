@@ -17,9 +17,9 @@ export function Navbar() {
         menu
       </button>
       <Link to="/">
-        <img className="logo" src="assets/logo.png" alt="logo" />
+        <img className="logo" src="/assets/logo.png" alt="logo" />
       </Link>
-      {!(
+      {/* {!(
         location.pathname.includes("login") ||
         location.pathname.includes("signup")
       ) && (
@@ -28,7 +28,7 @@ export function Navbar() {
           <input type="text" className="search-input" />
           <button className="btn-icon material-icons ">close</button>
         </div>
-      )}
+      )} */}
       {!(
         location.pathname.includes("login") ||
         location.pathname.includes("signup")
