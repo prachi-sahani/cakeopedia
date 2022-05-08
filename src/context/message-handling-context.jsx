@@ -5,6 +5,7 @@ const MessageHandlingContext = createContext();
 function MessageHandlingProvider({ children }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [showSidenav, setShowSidenav] = useState(false);
+  const [showErrorPage, setShowErrorPage] = useState(false);
   const [gridView, setGridView] = useState(true);
 
   function showSnackbar(message) {
@@ -24,6 +25,8 @@ function MessageHandlingProvider({ children }) {
         setShowSidenav,
         gridView,
         setGridView,
+        showErrorPage,
+        setShowErrorPage
       }}
     >
       {children}
