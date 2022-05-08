@@ -94,7 +94,7 @@ export function AddNote() {
               type="text"
               name="title"
               id="title"
-              className={`add-note-title bg-${note.bgColor}`}
+              className={`add-note-title txt-bold bg-${note.bgColor}`}
               placeholder="Title"
               value={note.title}
               onChange={(e) => setNote({ ...note, title: e.target.value })}

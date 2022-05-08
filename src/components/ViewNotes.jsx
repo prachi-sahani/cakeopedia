@@ -58,6 +58,12 @@ export function ViewNotes() {
     );
   }
 
+  function openNote(note) {
+    navigate(`/notes/note/${note.id}`, {
+      state: { background: location, note },
+    });
+  }
+
   return (
     <main className="view-notes mb-5">
       {notesLoading && <Loader />}
@@ -69,23 +75,12 @@ export function ViewNotes() {
               gridView ? "col-1" : "col-3"
             } col-sm-3 bg-${note.bgColor}`}
           >
-            <div
-              className="card-header"
-              onClick={() =>
-                navigate(`/notes/note/${note.id}`, {
-                  state: { background: location, note },
-                })
-              }
-            >
+            <div className="card-header" onClick={() => openNote(note)}>
               <div className="card-title note-title py-1">{note.title}</div>
             </div>
             <div
               className="card-content note-content"
-              onClick={() =>
-                navigate(`/notes/note/${note.id}`, {
-                  state: { background: location, note },
-                })
-              }
+              onClick={() => openNote(note)}
             >
               {note.description}
             </div>
