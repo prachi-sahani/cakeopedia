@@ -5,11 +5,17 @@ import { useMessageHandling } from "../context/message-handling-context";
 import "../stylesheets/view-notes.css";
 import { Loader } from "./Loader";
 import { v4 as uuid } from "uuid";
+import { bgColorPalette } from "../utilities/bg-color-palette";
 
 export function ViewNotes() {
   const { gridView } = useMessageHandling();
   const { getNotes, notes, notesLoading, updateNote } = useDBdata();
   const [notesToDisplay, setNotesToDisplay] = useState([]);
+  // to store data for which note(index), the color palette is open/close
+  const [showColorPalette, setShowColorPalette] = useState({
+    isOpen: false,
+    index: -1,
+  });
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
@@ -29,24 +35,39 @@ export function ViewNotes() {
       notes.map((element) =>
         element.id === note.id ? { ...note, [type]: true } : element
       ),
-      `Note sent to ${type}!`
+      `Note sent to ${type}!`,
+      true
     );
   }
 
   function duplicateNote(note) {
-    updateNote([...notes, { ...note, id: uuid() }], "Duplicate note created!");
+    updateNote(
+      [...notes, { ...note, id: uuid() }],
+      "Duplicate note created!",
+      true
+    );
+  }
+
+  function changeNoteBgColor(note, color) {
+    updateNote(
+      notes.map((element) =>
+        element.id === note.id ? { ...note, bgColor: color } : element
+      ),
+      "Note background changed!",
+      false
+    );
   }
 
   return (
-    <main className="view-notes">
+    <main className="view-notes mb-5">
       {notesLoading && <Loader />}
-      <div className="notes grid-container grid-3">
+      <div className="notes grid-container grid-3 ">
         {notesToDisplay?.map((note, index) => (
           <div
             key={index}
             className={`note grid-item card card-basic ${
               gridView ? "col-1" : "col-3"
-            } col-sm-3`}
+            } col-sm-3 bg-${note.bgColor}`}
           >
             <div
               className="card-header"
@@ -70,9 +91,35 @@ export function ViewNotes() {
             </div>
             <div className="card-footer note-footer">
               <div className="action-icons">
-                <button className="btn-icon material-icons-outlined">
+                <button
+                  className="btn-icon material-icons-outlined"
+                  onClick={() =>
+                    setShowColorPalette((value) =>
+                      value.index === index
+                        ? { ...value, isOpen: !value.isOpen }
+                        : { ...value, isOpen: true, index: index }
+                    )
+                  }
+                >
                   color_lens
                 </button>
+                {showColorPalette.isOpen && showColorPalette.index === index && (
+                  <div className="bg-color-palette">
+                    <ul className="bg-color-list">
+                      {bgColorPalette.map((item) => (
+                        <li
+                          key={item.id}
+                          className={`avatar avatar-icon avatar-xs bg-${item.bgColor}`}
+                          onClick={() => changeNoteBgColor(note, item.bgColor)}
+                        >
+                          {item.bgColor === note.bgColor && (
+                            <i className="material-icons">check</i>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 <button
                   className="btn-icon material-icons-outlined"
                   onClick={() => duplicateNote(note)}

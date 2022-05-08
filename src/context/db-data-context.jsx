@@ -27,14 +27,15 @@ function DBdataProvider({ children }) {
     }
   }
 
-  async function updateNote(notesList, msg) {
+  async function updateNote(notesList, msg, closeNote) {
     try {
       setNoteUpdateLoading(true);
       await addUserNote(sessionStorage.getItem("uid"), notesList);
       showSnackbar(msg);
-
       setNotes(notesList);
-      navigate("/notes");
+      if (closeNote) {
+        navigate("/notes");
+      }
     } catch (err) {
       showSnackbar("Some error occurred. Try Again!");
     } finally {

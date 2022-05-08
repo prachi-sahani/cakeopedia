@@ -2,6 +2,10 @@
   width: 100%;
 }
 
+.add-note-modal {
+  z-index: 4;
+}
+
 .add-note-title,
 .add-note-content {
   outline: none;
