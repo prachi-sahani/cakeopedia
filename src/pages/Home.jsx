@@ -6,7 +6,7 @@ export function Home() {
     <div className="container">
       <img
         className="hero-img p-2"
-        src="assets/hero-image.gif"
+        src="/assets/hero-image.gif"
         alt="Cakeopedia"
       />
       <div className="hero-content p-2">

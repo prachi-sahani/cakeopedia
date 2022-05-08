@@ -4,3 +4,7 @@
 .warning-snackbar .snackbar-close:hover {
   background-color: var(--black-600);
 }
+
+.warning-snackbar {
+  z-index: 3;
+}

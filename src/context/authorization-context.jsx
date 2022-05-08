@@ -1,10 +1,9 @@
-import { useContext, useState, createContext, useEffect } from "react";
+import { useContext, useState, createContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   login,
   logoutUser,
   signup,
-  updateUser,
 } from "../utilities/server-request";
 import { useMessageHandling } from "./message-handling-context";
 
@@ -68,11 +67,9 @@ function AuthProvider({ children }) {
   async function signupUser(data) {
     try {
       setIsLoadingSignup(true);
-      const token = await signup(data);
-      const user = await updateUser(data.name);
+      await signup(data);
       setIsLoadingSignup(false);
-      setAuthToken(token.user.uid);
-      sessionStorage.setItem("uid", token.user.uid);
+      setAuthToken(sessionStorage.getItem("uid"));
       const lastRoute = location?.state?.from?.pathname || "/notes";
       navigate(lastRoute);
     } catch (err) {
