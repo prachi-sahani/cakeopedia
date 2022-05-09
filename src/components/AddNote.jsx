@@ -3,12 +3,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDBdata } from "../context/db-data-context";
 import "../stylesheets/add-note.css";
 import { v4 as uuid } from "uuid";
+import { bgColorPalette } from "../utilities/bg-color-palette";
 
 export function AddNote() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [note, setNote] = useState({
     archive: false,
+    bgColor: "white",
     createdOn: new Date(),
     trash: false,
     description: "",
@@ -16,6 +18,7 @@ export function AddNote() {
     title: "",
     updatedOn: new Date(),
   });
+  const [showColorPalette, setShowColorPalette] = useState(false);
   const { updateNote, getNotes, notes, noteUpdateLoading } = useDBdata();
   useEffect(() => {
     // edit mode
@@ -38,10 +41,11 @@ export function AddNote() {
     if (id) {
       updateNote(
         notes.map((element) => (element.id === id ? note : element)),
-        "Note updated!"
+        "Note updated!",
+        true
       );
     } else {
-      updateNote([...notes, { ...note, id: uuid() }], "New note added!");
+      updateNote([...notes, { ...note, id: uuid() }], "New note added!", true);
     }
   }
 
@@ -52,27 +56,45 @@ export function AddNote() {
           ? { ...selectedNote, [type]: true }
           : element
       ),
-      `Note sent to ${type}!`
+      `Note sent to ${type}!`,
+      true
     );
   }
 
   function duplicateNote(selectedNote) {
     updateNote(
       [...notes, { ...selectedNote, id: uuid() }],
-      "Duplicate note created!"
+      "Duplicate note created!",
+      true
     );
+  }
+
+  function changeNoteBgColor(selectedNote, color) {
+    if (id) {
+      updateNote(
+        notes.map((element) =>
+          element.id === selectedNote.id
+            ? { ...selectedNote, bgColor: color }
+            : element
+        ),
+        "Note background changed!",
+        false
+      );
+    } else {
+      setNote((value) => ({ ...value, bgColor: color }));
+    }
   }
 
   return (
     <main>
       <div className="add-note-modal dialog-window">
-        <div className="dialog-box add-note-box">
+        <div className={`dialog-box add-note-box bg-${note.bgColor}`}>
           <div className="dialog-header txt txt-bold txt-md">
             <input
               type="text"
               name="title"
               id="title"
-              className="add-note-title"
+              className={`add-note-title txt-bold bg-${note.bgColor}`}
               placeholder="Title"
               value={note.title}
               onChange={(e) => setNote({ ...note, title: e.target.value })}
@@ -83,7 +105,7 @@ export function AddNote() {
               name="description"
               id="description"
               rows="15"
-              className="add-note-content"
+              className={`bg-${note.bgColor} add-note-content`}
               placeholder="Take a note..."
               value={note.description}
               onChange={(e) =>
@@ -93,9 +115,29 @@ export function AddNote() {
           </div>
           <div className="dialog-footer add-note-footer">
             <div className="note-action-icons">
-              <button className="btn-icon material-icons-outlined">
+              <button
+                className="btn-icon material-icons-outlined"
+                onClick={() => setShowColorPalette((value) => !value)}
+              >
                 color_lens
               </button>
+              {showColorPalette && (
+                <div className="bg-color-palette">
+                  <ul className="bg-color-list">
+                    {bgColorPalette.map((item) => (
+                      <li
+                        key={item.id}
+                        className={`avatar avatar-icon avatar-xs bg-${item.bgColor}`}
+                        onClick={() => changeNoteBgColor(note, item.bgColor)}
+                      >
+                        {item.bgColor === note.bgColor && (
+                          <i className="material-icons">check</i>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               {/* <button className="btn-icon material-icons-outlined">
                 image
               </button>
@@ -104,18 +146,21 @@ export function AddNote() {
               </button> */}
               <button
                 className="btn-icon material-icons-outlined"
+                disabled={!id}
                 onClick={() => duplicateNote(note)}
               >
                 content_copy
               </button>
               <button
                 className="btn-icon material-icons-outlined"
+                disabled={!id}
                 onClick={() => updateNoteStatus(note, "archive")}
               >
                 archive
               </button>
               <button
                 className="btn-icon material-icons-outlined"
+                disabled={!id}
                 onClick={() => updateNoteStatus(note, "trash")}
               >
                 delete

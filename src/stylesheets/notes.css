@@ -8,3 +8,65 @@
   flex-grow: 1;
   padding: 1rem 0.5rem;
 }
+
+.bg-color-palette {
+  position: absolute;
+  z-index: 2;
+  padding: 8px;
+  background-color: var(--black-inverted);
+  box-shadow: 0 1px 2px 0 rgb(60 64 67 / 30%), 0 2px 6px 2px rgb(60 64 67 / 15%);
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+.bg-color-list {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.bg-color-list .avatar {
+  cursor: pointer;
+}
+
+.bg-white.avatar {
+  border: 2px solid var(--black-200);
+}
+
+.bg-white {
+  background-color: var(--black-inverted);
+}
+
+.bg-light-coral {
+  background-color: var(--light-coral);
+}
+
+.bg-selective-yellow {
+  background-color: var(--selective-yellow);
+}
+
+.bg-mauve {
+  background-color: var(--mauve);
+}
+
+.bg-menthol {
+  background-color: var(--menthol);
+}
+
+.bg-pale-cornflower-blue {
+  background-color: var(--pale-cornflower-blue);
+}
+
+.bg-bright-gray {
+  background-color: var(--bright-gray);
+}
+
+.bg-bright-gray,
+.bg-menthol,
+.bg-white,
+.bg-light-coral,
+.bg-mauve,
+.bg-selective-yellow,
+.bg-pale-cornflower-blue {
+  color: var(--black-700);
+}
