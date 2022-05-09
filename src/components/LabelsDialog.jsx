@@ -3,7 +3,8 @@ import { useDBdata } from "../context/db-data-context";
 import "../stylesheets/label-dialog.css";
 
 export function LabelsDialog({ note, editMode, setNote }) {
-  const { updateUserLabels, updateNote, notes, labels } = useDBdata();
+  const { updateUserLabels, updateNote, notes, labels, updateNoteAndLabel } =
+    useDBdata();
   const [labelInput, setLabelInput] = useState("");
   const [filteredLabels, setFilteredLabels] = useState(labels);
 
@@ -63,22 +64,23 @@ export function LabelsDialog({ note, editMode, setNote }) {
     if (editMode) {
       // update note labels - edit/add note page
       setNote({ ...note, labels: [...note.labels, value] });
+      // update labels list in db
+      updateUserLabels([value, ...labels], `"${value}" label created!`);
     } else {
-      // directly update labels in db - view notes page
-      updateNote(
+      // directly update notes in db - view notes page
+      updateNoteAndLabel(
+        [value, ...labels],
         notes.map((element) =>
           element.id === selectedNote.id
-            ? { ...element, labels: [value, ...element.labels] }
+            ? { ...element, labels: [...element.labels, value] }
             : element
         ),
-        `"${value}" label added to the note!`,
+        `"${value}" label created added to the note!`,
         false
       );
     }
     // update displayed list of labels
     setFilteredLabels([value, ...labels]);
-    // update labels list in db
-    updateUserLabels([value, ...labels], `"${value}" label created!`);
     setLabelInput("");
   }
 

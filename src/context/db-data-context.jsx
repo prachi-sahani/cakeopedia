@@ -65,6 +65,22 @@ function DBdataProvider({ children }) {
     }
   }
 
+  async function updateNoteAndLabel(labelsList, notesList, msg) {
+    try {
+      const dataToSend = {
+        userID: sessionStorage.getItem("uid"),
+        notes: notesList,
+        labels: labelsList,
+      };
+      await addUserNote(dataToSend);
+      showSnackbar(msg);
+      setNotes(notesList);
+      setLabels(labelsList);
+    } catch (err) {
+      showSnackbar("Some error occurred. Try Again!");
+    }
+  }
+
   return (
     <DBdataContext.Provider
       value={{
@@ -76,6 +92,7 @@ function DBdataProvider({ children }) {
         labels,
         updateUserLabels,
         setLabels,
+        updateNoteAndLabel
       }}
     >
       {children}
