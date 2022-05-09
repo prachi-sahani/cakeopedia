@@ -75,7 +75,7 @@ export function LabelsDialog({ note, editMode, setNote }) {
             ? { ...element, labels: [...element.labels, value] }
             : element
         ),
-        `"${value}" label created added to the note!`,
+        `"${value}" label created & added to the note!`,
         false
       );
     }
