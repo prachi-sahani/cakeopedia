@@ -24,7 +24,11 @@ async function signup(data) {
   await updateUser(data.name);
   sessionStorage.setItem("uid", userData.user.uid);
   const notesRef = doc(db, "notes", userData.user.uid);
-  return setDoc(notesRef, { notes: [], userID: userData.user.uid });
+  return setDoc(notesRef, {
+    notes: [],
+    userID: userData.user.uid,
+    labels: ["Recipes", "Orders", "Personal"],
+  });
 }
 
 function updateUser(displayName) {
@@ -34,6 +38,7 @@ function updateUser(displayName) {
 async function login(data) {
   return signInWithEmailAndPassword(auth, data.email, data.password);
 }
+
 function logoutUser() {
   return signOut(auth);
 }
@@ -43,9 +48,9 @@ async function getUserNotes(uid) {
   return getDocs(q);
 }
 
-async function addUserNote(uid, notes) {
-  const notesRef = doc(db, "notes", uid);
-  return updateDoc(notesRef, { userID: uid, notes });
+async function addUserNote(dataToSend) {
+  const notesRef = doc(db, "notes", dataToSend.userID);
+  return updateDoc(notesRef, dataToSend);
 }
 
 export { signup, login, updateUser, logoutUser, getUserNotes, addUserNote };

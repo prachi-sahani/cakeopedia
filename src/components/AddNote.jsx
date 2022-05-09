@@ -4,6 +4,7 @@ import { useDBdata } from "../context/db-data-context";
 import "../stylesheets/add-note.css";
 import { v4 as uuid } from "uuid";
 import { bgColorPalette } from "../utilities/bg-color-palette";
+import { LabelsDialog } from "./LabelsDialog";
 
 export function AddNote() {
   const { id } = useParams();
@@ -19,7 +20,17 @@ export function AddNote() {
     updatedOn: new Date(),
   });
   const [showColorPalette, setShowColorPalette] = useState(false);
-  const { updateNote, getNotes, notes, noteUpdateLoading } = useDBdata();
+  const [showLabelsDialog, setShowLabelsDialog] = useState(false);
+
+  const {
+    updateNote,
+    getNotes,
+    notes,
+    noteUpdateLoading,
+    labels,
+    updateUserLabels,
+  } = useDBdata();
+
   useEffect(() => {
     // edit mode
     if (id) {
@@ -39,6 +50,7 @@ export function AddNote() {
 
   function saveNote() {
     if (id) {
+      updateUserLabels(labels, `Labels updated!`);
       updateNote(
         notes.map((element) => (element.id === id ? note : element)),
         "Note updated!",
@@ -84,7 +96,7 @@ export function AddNote() {
       setNote((value) => ({ ...value, bgColor: color }));
     }
   }
-
+  
   return (
     <main>
       <div className="add-note-modal dialog-window">
@@ -115,6 +127,15 @@ export function AddNote() {
           </div>
           <div className="dialog-footer add-note-footer">
             <div className="note-action-icons">
+              <button
+                className="btn-icon material-icons-outlined"
+                onClick={() => setShowLabelsDialog((value) => !value)}
+              >
+                new_label
+              </button>
+              {showLabelsDialog && (
+                <LabelsDialog note={note} editMode={true} setNote={setNote} />
+              )}
               <button
                 className="btn-icon material-icons-outlined"
                 onClick={() => setShowColorPalette((value) => !value)}
