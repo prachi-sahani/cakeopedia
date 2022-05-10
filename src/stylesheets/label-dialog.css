@@ -35,6 +35,10 @@
   width: 100%;
 }
 
+.label-checkbox {
+  flex-shrink: 0;
+}
+
 .labels-list {
   max-height: 7rem;
   overflow-y: auto;
@@ -42,6 +46,7 @@
 
 .labels-list::-webkit-scrollbar {
   width: 4px;
+  height: 4px;
 }
 
 .labels-list::-webkit-scrollbar-track {

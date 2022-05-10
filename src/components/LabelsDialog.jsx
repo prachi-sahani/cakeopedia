@@ -100,12 +100,13 @@ export function LabelsDialog({ note, editMode, setNote }) {
       />
       <div className="labels-list">
         {filteredLabels?.map((label, i) => (
-          <p key={i} className="txt checkbox-input-group auth-checkbox">
+          <p key={i} className="txt checkbox-input-group">
             <input
               type="checkbox"
               onChange={(e) => updateLabels(note, label, e.target.checked)}
               checked={note.labels.includes(label)}
               name="label"
+              className="label-checkbox"
               value={label}
             />
             <label htmlFor="playlist">{label}</label>
