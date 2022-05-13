@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useDBdata } from "../context/db-data-context";
+import { useMessageHandling } from "../context/message-handling-context";
 import "../stylesheets/label-dialog.css";
 
 export function LabelsDialog({ note, editMode, setNote }) {
   const { updateUserLabels, updateNote, notes, labels, updateNoteAndLabel } =
     useDBdata();
+  const { showSnackbar } = useMessageHandling();
+
   const [labelInput, setLabelInput] = useState("");
   const [filteredLabels, setFilteredLabels] = useState(labels);
 
@@ -64,27 +67,31 @@ export function LabelsDialog({ note, editMode, setNote }) {
   }
 
   function updateLabelsList(selectedNote, value) {
-    if (editMode) {
-      // update note labels - edit/add note page
-      setNote({ ...note, labels: [...note.labels, value] });
-      // update labels list in db
-      updateUserLabels([value, ...labels], `"${value}" label created!`);
+    if (filteredLabels.length > 0) {
+      showSnackbar(`${value} label already exists!`);
     } else {
-      // directly update notes in db - view notes page
-      updateNoteAndLabel(
-        [value, ...labels],
-        notes.map((element) =>
-          element.id === selectedNote.id
-            ? { ...element, labels: [...element.labels, value] }
-            : element
-        ),
-        `"${value}" label created & added to the note!`,
-        false
-      );
+      if (editMode) {
+        // update note labels - edit/add note page
+        setNote({ ...note, labels: [...note.labels, value] });
+        // update labels list in db
+        updateUserLabels([value, ...labels], `"${value}" label created!`);
+      } else {
+        // directly update notes in db - view notes page
+        updateNoteAndLabel(
+          [value, ...labels],
+          notes.map((element) =>
+            element.id === selectedNote.id
+              ? { ...element, labels: [...element.labels, value] }
+              : element
+          ),
+          `"${value}" label created & added to the note!`,
+          false
+        );
+      }
+      // update displayed list of labels
+      setFilteredLabels([value, ...labels]);
+      setLabelInput("");
     }
-    // update displayed list of labels
-    setFilteredLabels([value, ...labels]);
-    setLabelInput("");
   }
 
   return (
@@ -116,15 +123,17 @@ export function LabelsDialog({ note, editMode, setNote }) {
           </p>
         ))}
       </div>
-      {labelInput && <hr />}
       {labelInput && (
-        <button
-          className=" btn-link btn-w-icon btn-create-label"
-          onClick={() => updateLabelsList(note, labelInput)}
-        >
-          <i className="material-icons">add</i>
-          {`Create "${labelInput}" Label`}
-        </button>
+        <>
+          <hr />
+          <button
+            className=" btn-link btn-w-icon btn-create-label"
+            onClick={() => updateLabelsList(note, labelInput)}
+          >
+            <i className="material-icons">add</i>
+            {`Create "${labelInput}" Label`}
+          </button>
+        </>
       )}
     </div>
   );
