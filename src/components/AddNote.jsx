@@ -99,17 +99,11 @@ export function AddNote() {
     }
   }
 
-  function removeLabel(selectedLabel, selectedNote) {
-    const dataToSend = notes.map((element) =>
-      element.id === selectedNote.id
-        ? {
-            ...element,
-            labels: element.labels.filter((item) => item !== selectedLabel),
-          }
-        : element
-    );
-    const msg = `"${selectedLabel}" label removed from the note!`;
-    updateNote(dataToSend, msg, false);
+  function removeLabel(selectedLabel) {
+    setNote((value) => ({
+      ...value,
+      labels: value.labels.filter((item) => item !== selectedLabel),
+    }));
   }
 
   return (
@@ -147,7 +141,7 @@ export function AddNote() {
                   {item}
                   <button
                     className="btn-link btn-sm material-icons"
-                    onClick={() => removeLabel(item, note)}
+                    onClick={() => removeLabel(item)}
                   >
                     close
                   </button>
