@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDBdata } from "../context/db-data-context";
 import { useMessageHandling } from "../context/message-handling-context";
 import "../stylesheets/view-notes.css";
@@ -8,10 +8,10 @@ import { v4 as uuid } from "uuid";
 import { bgColorPalette } from "../utilities/bg-color-palette";
 import { LabelsDialog } from "./LabelsDialog";
 
-export function ViewNotes() {
+export function ViewNotes({ sortBy }) {
+  const { label } = useParams();
   const { gridView } = useMessageHandling();
-  const { getNotes, notes, notesLoading, updateNote, labels, setLabels } =
-    useDBdata();
+  const { getNotes, notes, notesLoading, updateNote } = useDBdata();
   const [notesToDisplay, setNotesToDisplay] = useState([]);
   // to store data for which note(index), the color palette is open/close
   const [showColorPalette, setShowColorPalette] = useState({
@@ -31,15 +31,50 @@ export function ViewNotes() {
   }, []);
 
   useEffect(() => {
-    setNotesToDisplay(
-      notes?.filter((element) => !element.trash && !element.archive).reverse()
-    );
-  }, [notes]);
+    if (label) {
+      setNotesToDisplay(
+        notes
+          ?.filter(
+            (element) =>
+              !element.trash &&
+              !element.archive &&
+              element.labels.includes(label)
+          )
+          .sort((a, b) => {
+            return sortBy === "Latest"
+              ? b.updatedOn - a.updatedOn
+              : a.updatedOn - b.updatedOn;
+          })
+      );
+    } else {
+      setNotesToDisplay(
+        notes
+          ?.filter((element) => !element.trash && !element.archive)
+          .sort((a, b) => {
+            return sortBy === "Latest"
+              ? b.updatedOn - a.updatedOn
+              : a.updatedOn - b.updatedOn;
+          })
+      );
+    }
+  }, [notes, label]);
+
+  useEffect(() => {
+    setNotesToDisplay([
+      ...notesToDisplay.sort((a, b) => {
+        return sortBy === "Latest"
+          ? b.updatedOn - a.updatedOn
+          : a.updatedOn - b.updatedOn;
+      }),
+    ]);
+  }, [sortBy]);
 
   function updateNoteStatus(note, type) {
     updateNote(
       notes.map((element) =>
-        element.id === note.id ? { ...note, [type]: true } : element
+        element.id === note.id
+          ? { ...note, [type]: true, updatedOn: new Date() }
+          : element
       ),
       `Note sent to ${type}!`,
       true
@@ -48,7 +83,10 @@ export function ViewNotes() {
 
   function duplicateNote(note) {
     updateNote(
-      [...notes, { ...note, id: uuid() }],
+      [
+        ...notes,
+        { ...note, id: uuid(), updatedOn: new Date(), createdOn: new Date() },
+      ],
       "Duplicate note created!",
       true
     );
@@ -68,6 +106,19 @@ export function ViewNotes() {
     navigate(`/notes/note/${note.id}`, {
       state: { background: location, note },
     });
+  }
+
+  function removeLabel(selectedLabel, selectedNote) {
+    const dataToSend = notes.map((element) =>
+      element.id === selectedNote.id
+        ? {
+            ...element,
+            labels: element.labels.filter((item) => item !== selectedLabel),
+          }
+        : element
+    );
+    const msg = `"${selectedLabel}" label removed from the note!`;
+    updateNote(dataToSend, msg, false);
   }
 
   return (
@@ -90,7 +141,21 @@ export function ViewNotes() {
             >
               {note.description}
             </div>
+
             <div className="card-footer note-footer">
+              <div className="label-tags pt-2">
+                {note.labels.map((item, i) => (
+                  <div key={i} className="label-tag-item">
+                    {item}
+                    <button
+                      className="btn-link btn-sm material-icons"
+                      onClick={() => removeLabel(item, note)}
+                    >
+                      close
+                    </button>
+                  </div>
+                ))}
+              </div>
               <div className="action-icons">
                 <button
                   className="btn-icon material-icons-outlined"
@@ -160,7 +225,7 @@ export function ViewNotes() {
           </div>
         ))}
       </div>
-      {notesToDisplay?.length === 0 && (
+      {notesToDisplay?.length === 0 && !notesLoading && (
         <div className="my-5 txt-center txt-gray">
           <Link
             to="/notes/note"
@@ -171,6 +236,7 @@ export function ViewNotes() {
           <h1 className="heading h2">Start adding notes</h1>
         </div>
       )}
+
       <button
         onClick={() =>
           navigate("/notes/note", { state: { background: location } })

@@ -5,6 +5,7 @@
 
 .note-footer {
   margin-top: auto;
+  gap: 0;
 }
 
 .add-note {
@@ -38,4 +39,36 @@
   line-height: 1.25;
   padding: 0 0.5rem;
   cursor: pointer;
+}
+
+.label-tags {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.label-tag-item {
+  padding: 0.25rem 0.5rem;
+  background-color: var(--black-050);
+  color: var(--black-600);
+  border-radius: 1.25rem;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  font-size: 0.8rem;
+  margin: 2px;
+  cursor: pointer;
+}
+
+.label-tag-item .btn-link {
+  padding: 2px;
+  font-size: 0.9rem;
+}
+
+.label-tag-item .btn-link:hover {
+  border-radius: 50%;
+  border-color: var(--black-200);
+  color: var(--black-700);
+  background-color: var(--black-100);
 }

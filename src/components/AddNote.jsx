@@ -22,14 +22,7 @@ export function AddNote() {
   const [showColorPalette, setShowColorPalette] = useState(false);
   const [showLabelsDialog, setShowLabelsDialog] = useState(false);
 
-  const {
-    updateNote,
-    getNotes,
-    notes,
-    noteUpdateLoading,
-    labels,
-    updateUserLabels,
-  } = useDBdata();
+  const { updateNote, getNotes, notes, noteUpdateLoading } = useDBdata();
 
   useEffect(() => {
     // edit mode
@@ -50,9 +43,10 @@ export function AddNote() {
 
   function saveNote() {
     if (id) {
-      updateUserLabels(labels, `Labels updated!`);
       updateNote(
-        notes.map((element) => (element.id === id ? note : element)),
+        notes.map((element) =>
+          element.id === id ? { ...note, updatedOn: new Date() } : element
+        ),
         "Note updated!",
         true
       );
@@ -65,7 +59,7 @@ export function AddNote() {
     updateNote(
       notes.map((element) =>
         element.id === selectedNote.id
-          ? { ...selectedNote, [type]: true }
+          ? { ...selectedNote, [type]: true, updatedOn: new Date() }
           : element
       ),
       `Note sent to ${type}!`,
@@ -75,7 +69,15 @@ export function AddNote() {
 
   function duplicateNote(selectedNote) {
     updateNote(
-      [...notes, { ...selectedNote, id: uuid() }],
+      [
+        ...notes,
+        {
+          ...selectedNote,
+          id: uuid(),
+          updatedOn: new Date(),
+          createdOn: new Date(),
+        },
+      ],
       "Duplicate note created!",
       true
     );
@@ -96,7 +98,14 @@ export function AddNote() {
       setNote((value) => ({ ...value, bgColor: color }));
     }
   }
-  
+
+  function removeLabel(selectedLabel) {
+    setNote((value) => ({
+      ...value,
+      labels: value.labels.filter((item) => item !== selectedLabel),
+    }));
+  }
+
   return (
     <main>
       <div className="add-note-modal dialog-window">
@@ -126,6 +135,19 @@ export function AddNote() {
             ></textarea>
           </div>
           <div className="dialog-footer add-note-footer">
+            <div className="label-tags pt-2">
+              {note.labels.map((item, i) => (
+                <div key={i} className="label-tag-item">
+                  {item}
+                  <button
+                    className="btn-link btn-sm material-icons"
+                    onClick={() => removeLabel(item)}
+                  >
+                    close
+                  </button>
+                </div>
+              ))}
+            </div>
             <div className="note-action-icons">
               <button
                 className="btn-icon material-icons-outlined"
