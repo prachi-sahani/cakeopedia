@@ -34,7 +34,7 @@ export function SideNav() {
         {/* list of side nav items */}
         {sidenavItemList?.map((item, i) => (
           <CustomNavLink
-            key={`${i + labels.length + 1}-${item.title}`} // index+length of labels array + 1+ nav item title
+            key={`${i + labels?.length + 1}-${item.title}`} // index+length of labels array + 1+ nav item title
             navigateTo={item.route}
           >
             <li className="list-item list-w-icon px-2">

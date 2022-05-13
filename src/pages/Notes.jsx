@@ -53,7 +53,7 @@ export function Notes() {
             ></Route>
             <Route path="/note" element={<AddNote />}></Route>
             <Route path="/note/:id" element={<AddNote />}></Route>
-            <Route path="*" exact={true} element={<PageNotFound />} />
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
           {background && (
             <Routes>
