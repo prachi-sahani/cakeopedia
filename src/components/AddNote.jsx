@@ -99,6 +99,19 @@ export function AddNote() {
     }
   }
 
+  function removeLabel(selectedLabel, selectedNote) {
+    const dataToSend = notes.map((element) =>
+      element.id === selectedNote.id
+        ? {
+            ...element,
+            labels: element.labels.filter((item) => item !== selectedLabel),
+          }
+        : element
+    );
+    const msg = `"${selectedLabel}" label removed from the note!`;
+    updateNote(dataToSend, msg, false);
+  }
+
   return (
     <main>
       <div className="add-note-modal dialog-window">
@@ -128,6 +141,19 @@ export function AddNote() {
             ></textarea>
           </div>
           <div className="dialog-footer add-note-footer">
+            <div className="label-tags pt-2">
+              {note.labels.map((item, i) => (
+                <div key={i} className="label-tag-item">
+                  {item}
+                  <button
+                    className="btn-link btn-sm material-icons"
+                    onClick={() => removeLabel(item, note)}
+                  >
+                    close
+                  </button>
+                </div>
+              ))}
+            </div>
             <div className="note-action-icons">
               <button
                 className="btn-icon material-icons-outlined"
