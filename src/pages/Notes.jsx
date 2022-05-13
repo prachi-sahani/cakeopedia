@@ -1,8 +1,14 @@
 import { Route, Routes, useLocation } from "react-router-dom";
-import { ErrorPage, Navbar, SideNav, ViewNotes } from "../components";
+import {
+  ErrorPage,
+  Navbar,
+  SideNav,
+  ViewNotes,
+  NotesHeader,
+  AddNote,
+} from "../components";
 import { PageNotFound } from "./PageNotFound";
 import "../stylesheets/notes.css";
-import { AddNote } from "../components/AddNote";
 import { useMessageHandling } from "../context/message-handling-context";
 import { useState } from "react";
 import { useDBdata } from "../context/db-data-context";
@@ -12,34 +18,12 @@ export function Notes() {
   const background = location.state && location.state.background;
   const { showErrorPage } = useMessageHandling();
   const { notes } = useDBdata();
-  const [showSortBy, setShowSortBy] = useState(false);
   const [sortBy, setSortBy] = useState("Latest");
   return (
     <div>
       <Navbar />
       {notes?.length > 0 && (
-        <header className="header">
-          <div
-            className="sort-wrapper"
-            onMouseEnter={() => setShowSortBy(true)}
-            onMouseLeave={() => setShowSortBy(false)}
-          >
-            <div className="sort-by">
-              Sort by date: {sortBy} first
-              <i className="material-icons">arrow_drop_down</i>
-            </div>
-            {showSortBy && (
-              <ul className="sort-list list-group-stacked">
-                <li className="list-item" onClick={() => setSortBy("Latest")}>
-                  Latest first
-                </li>
-                <li className="list-item" onClick={() => setSortBy("Oldest")}>
-                  Oldest first
-                </li>
-              </ul>
-            )}
-          </div>
-        </header>
+        <NotesHeader sortBy={sortBy} setSortBy={setSortBy} />
       )}
       <div className="page-content">
         <SideNav />
