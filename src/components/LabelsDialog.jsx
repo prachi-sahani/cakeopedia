@@ -25,7 +25,10 @@ export function LabelsDialog({ note, editMode, setNote }) {
         // add labels for the selected note if the checkbox is checked
         dataToSend = notes.map((element) =>
           element.id === selectedNote.id
-            ? { ...element, labels: [...element.labels, labelToUpdate] }
+            ? {
+                ...element,
+                labels: [...element.labels, labelToUpdate],
+              }
             : element
         );
         msg = `"${labelToUpdate}" label added to the note!`;
