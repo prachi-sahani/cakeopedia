@@ -9,7 +9,8 @@
   padding: 1rem 0.5rem;
 }
 
-.bg-color-palette {
+.bg-color-palette,
+.labels-note {
   position: absolute;
   z-index: 2;
   padding: 8px;
@@ -69,4 +70,18 @@
 .bg-selective-yellow,
 .bg-pale-cornflower-blue {
   color: var(--black-700);
+}
+
+.add-note-modal .labels-note,
+.add-note-modal .bg-color-palette {
+  text-align: left;
+  bottom: 4rem;
+}
+
+@media screen and (max-width: 400px) {
+  .add-note-modal .labels-note,
+  .add-note-modal .bg-color-palette {
+    text-align: left;
+    bottom: 7rem;
+  }
 }

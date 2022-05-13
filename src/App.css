@@ -38,3 +38,7 @@ body {
 .link {
   text-decoration: none;
 }
+
+.w-100 {
+  width: 100%;
+}

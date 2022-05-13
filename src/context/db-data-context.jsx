@@ -7,6 +7,7 @@ const DBdataContext = createContext();
 function DBdataProvider({ children }) {
   const navigate = useNavigate();
   const [notes, setNotes] = useState(null);
+  const [labels, setLabels] = useState(null);
   const [notesLoading, setNotesLoading] = useState(false);
   const [noteUpdateLoading, setNoteUpdateLoading] = useState(false);
   const { showSnackbar, setShowErrorPage } = useMessageHandling();
@@ -14,9 +15,10 @@ function DBdataProvider({ children }) {
     try {
       setNotesLoading(true);
       const data = await getUserNotes(sessionStorage.getItem("uid"));
-      const finalData = data.docs.map((doc) => doc.data().notes)[0];
+      const finalData = data.docs.map((doc) => doc.data())[0];
       if (finalData) {
-        setNotes(data.docs.map((doc) => doc.data().notes)[0]);
+        setNotes(finalData.notes);
+        setLabels(finalData.labels);
       } else {
         setShowErrorPage(true);
       }
@@ -30,7 +32,12 @@ function DBdataProvider({ children }) {
   async function updateNote(notesList, msg, closeNote) {
     try {
       setNoteUpdateLoading(true);
-      await addUserNote(sessionStorage.getItem("uid"), notesList);
+      const dataToSend = {
+        userID: sessionStorage.getItem("uid"),
+        notes: notesList,
+        labels: labels,
+      };
+      await addUserNote(dataToSend);
       showSnackbar(msg);
       setNotes(notesList);
       if (closeNote) {
@@ -43,9 +50,50 @@ function DBdataProvider({ children }) {
     }
   }
 
+  async function updateUserLabels(labelsList, msg) {
+    try {
+      const dataToSend = {
+        userID: sessionStorage.getItem("uid"),
+        notes: notes,
+        labels: labelsList,
+      };
+      await addUserNote(dataToSend);
+      showSnackbar(msg);
+      setLabels(labelsList);
+    } catch (err) {
+      showSnackbar("Some error occurred. Try Again!");
+    }
+  }
+
+  async function updateNoteAndLabel(labelsList, notesList, msg) {
+    try {
+      const dataToSend = {
+        userID: sessionStorage.getItem("uid"),
+        notes: notesList,
+        labels: labelsList,
+      };
+      await addUserNote(dataToSend);
+      showSnackbar(msg);
+      setNotes(notesList);
+      setLabels(labelsList);
+    } catch (err) {
+      showSnackbar("Some error occurred. Try Again!");
+    }
+  }
+
   return (
     <DBdataContext.Provider
-      value={{ getNotes, notes, notesLoading, updateNote, noteUpdateLoading }}
+      value={{
+        getNotes,
+        notes,
+        notesLoading,
+        updateNote,
+        noteUpdateLoading,
+        labels,
+        updateUserLabels,
+        setLabels,
+        updateNoteAndLabel
+      }}
     >
       {children}
     </DBdataContext.Provider>

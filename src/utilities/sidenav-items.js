@@ -5,17 +5,17 @@ export const sidenavItemList = [
     route: "/notes",
   },
   {
+    title: "Recipes",
+    iconName: "label",
+    route: "/",
+  },
+  {
+    title: "Orders",
+    iconName: "label",
+    route: "/",
+  },
+  {
     title: "Personal",
-    iconName: "label",
-    route: "/",
-  },
-  {
-    title: "Work",
-    iconName: "label",
-    route: "/",
-  },
-  {
-    title: "Inspiration",
     iconName: "label",
     route: "/",
   },

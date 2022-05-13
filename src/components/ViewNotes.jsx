@@ -6,13 +6,19 @@ import "../stylesheets/view-notes.css";
 import { Loader } from "./Loader";
 import { v4 as uuid } from "uuid";
 import { bgColorPalette } from "../utilities/bg-color-palette";
+import { LabelsDialog } from "./LabelsDialog";
 
 export function ViewNotes() {
   const { gridView } = useMessageHandling();
-  const { getNotes, notes, notesLoading, updateNote } = useDBdata();
+  const { getNotes, notes, notesLoading, updateNote, labels, setLabels } =
+    useDBdata();
   const [notesToDisplay, setNotesToDisplay] = useState([]);
   // to store data for which note(index), the color palette is open/close
   const [showColorPalette, setShowColorPalette] = useState({
+    isOpen: false,
+    index: -1,
+  });
+  const [showLabelsDialog, setShowLabelsDialog] = useState({
     isOpen: false,
     index: -1,
   });
@@ -86,6 +92,22 @@ export function ViewNotes() {
             </div>
             <div className="card-footer note-footer">
               <div className="action-icons">
+                <button
+                  className="btn-icon material-icons-outlined"
+                  onClick={() => {
+                    setShowLabelsDialog((value) =>
+                      value.index === index
+                        ? { ...value, isOpen: !value.isOpen }
+                        : { ...value, isOpen: true, index: index }
+                    );
+                  }}
+                >
+                  new_label
+                </button>
+                {showLabelsDialog.isOpen &&
+                  showLabelsDialog.index === index && (
+                    <LabelsDialog note={note} editMode={false} />
+                  )}
                 <button
                   className="btn-icon material-icons-outlined"
                   onClick={() =>
