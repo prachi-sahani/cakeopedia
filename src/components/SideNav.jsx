@@ -3,7 +3,6 @@ import { useDBdata } from "../context/db-data-context";
 import { useMessageHandling } from "../context/message-handling-context";
 import "../stylesheets/sidenav.css";
 import { sidenavItemList } from "../utilities/sidenav-items";
-import { v4 as uuid } from "uuid";
 
 export function SideNav() {
   const { labels } = useDBdata();
@@ -17,7 +16,7 @@ export function SideNav() {
         <NavLink
           end={true}
           to="/notes"
-          key={uuid()}
+          key="1-Notes"
           className={({ isActive }) => (isActive ? "link active" : "link")}
         >
           <li className="list-item list-w-icon px-2">
@@ -25,11 +24,11 @@ export function SideNav() {
             Notes
           </li>
         </NavLink>
-        {labels?.map((item) => (
+        {labels?.map((item, i) => (
           <NavLink
             end={true}
             to={`/notes/label/${item}`}
-            key={uuid()}
+            key={`${i + 1}-${item}`} // index + 1 + label name
             className={({ isActive }) => (isActive ? "link active" : "link")}
           >
             <li className="list-item list-w-icon px-2">
@@ -38,11 +37,11 @@ export function SideNav() {
             </li>
           </NavLink>
         ))}
-        {sidenavItemList?.map((item) => (
+        {sidenavItemList?.map((item, i) => (
           <NavLink
             end={true}
             to={item.route}
-            key={uuid()}
+            key={`${i + labels.length + 1}-${item.title}`} // index+length of labels array + 1+ nav item title
             className={({ isActive }) => (isActive ? "link active" : "link")}
           >
             <li className="list-item list-w-icon px-2">
