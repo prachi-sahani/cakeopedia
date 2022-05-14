@@ -32,16 +32,34 @@ export function Notes() {
           <Routes location={background || location}>
             <Route path="/" element={<ViewNotes sortBy={sortBy} />}></Route>
             <Route
+              path="/archive"
+              element={<ViewNotes sortBy={sortBy} />}
+            ></Route>
+            <Route
+              path="/trash"
+              element={<ViewNotes sortBy={sortBy} />}
+            ></Route>
+            <Route
               path="/label/:label"
               element={<ViewNotes sortBy={sortBy} />}
             ></Route>
             <Route path="/note" element={<AddNote />}></Route>
             <Route path="/note/:id" element={<AddNote />}></Route>
+            <Route path="/archive/note/:id" element={<AddNote />}></Route>
+            <Route path="/trash/note/:id" element={<AddNote />}></Route>
+            <Route path="/label/:label/note/:id" element={<AddNote />}></Route>
             <Route path="*" element={<PageNotFound />} />
           </Routes>
           {background && (
             <Routes>
               <Route path="/note/:id" element={<AddNote />}></Route>
+              <Route path="/archive/note/:id" element={<AddNote />}></Route>
+              <Route path="/trash/note/:id" element={<AddNote />}></Route>
+              <Route
+                path="/label/:label/note/:id"
+                element={<AddNote />}
+              ></Route>
+              <Route path="/label/:label/note" element={<AddNote />}></Route>
               <Route path="/note" element={<AddNote />}></Route>
             </Routes>
           )}
