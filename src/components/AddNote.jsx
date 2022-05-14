@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDBdata } from "../context/db-data-context";
 import "../stylesheets/add-note.css";
 import { v4 as uuid } from "uuid";
-import { bgColorPalette } from "../utilities/bg-color-palette";
-import { LabelsDialog } from "./LabelsDialog";
+
+import { useMessageHandling } from "../context/message-handling-context";
+import { NoteFooterIcons } from "./NoteFooterIcons";
 
 export function AddNote() {
-  const { id } = useParams();
+  const { id, label } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [note, setNote] = useState({
     archive: false,
     bgColor: "white",
@@ -19,11 +21,9 @@ export function AddNote() {
     title: "",
     updatedOn: new Date(),
   });
-  const [showColorPalette, setShowColorPalette] = useState(false);
-  const [showLabelsDialog, setShowLabelsDialog] = useState(false);
 
   const { updateNote, getNotes, notes, noteUpdateLoading } = useDBdata();
-
+  const { showSnackbar } = useMessageHandling();
   useEffect(() => {
     // edit mode
     if (id) {
@@ -33,7 +33,14 @@ export function AddNote() {
           setNote(selectedNote);
         } else {
           navigate("*");
+          showSnackbar("Invalid note id!");
         }
+      }
+    } else {
+      // new note
+      // while adding note from label page, that particular label will be added to the new note
+      if (label) {
+        setNote((value) => ({ ...value, labels: [label] }));
       }
     }
     if (!notes) {
@@ -42,6 +49,7 @@ export function AddNote() {
   }, [notes]);
 
   function saveNote() {
+    // edit mode
     if (id) {
       updateNote(
         notes.map((element) =>
@@ -51,51 +59,8 @@ export function AddNote() {
         true
       );
     } else {
+      // add new note
       updateNote([...notes, { ...note, id: uuid() }], "New note added!", true);
-    }
-  }
-
-  function updateNoteStatus(selectedNote, type) {
-    updateNote(
-      notes.map((element) =>
-        element.id === selectedNote.id
-          ? { ...selectedNote, [type]: true, updatedOn: new Date() }
-          : element
-      ),
-      `Note sent to ${type}!`,
-      true
-    );
-  }
-
-  function duplicateNote(selectedNote) {
-    updateNote(
-      [
-        ...notes,
-        {
-          ...selectedNote,
-          id: uuid(),
-          updatedOn: new Date(),
-          createdOn: new Date(),
-        },
-      ],
-      "Duplicate note created!",
-      true
-    );
-  }
-
-  function changeNoteBgColor(selectedNote, color) {
-    if (id) {
-      updateNote(
-        notes.map((element) =>
-          element.id === selectedNote.id
-            ? { ...selectedNote, bgColor: color }
-            : element
-        ),
-        "Note background changed!",
-        false
-      );
-    } else {
-      setNote((value) => ({ ...value, bgColor: color }));
     }
   }
 
@@ -148,78 +113,21 @@ export function AddNote() {
                 </div>
               ))}
             </div>
-            <div className="note-action-icons">
-              <button
-                className="btn-icon material-icons-outlined"
-                onClick={() => setShowLabelsDialog((value) => !value)}
-              >
-                new_label
-              </button>
-              {showLabelsDialog && (
-                <LabelsDialog note={note} editMode={true} setNote={setNote} />
-              )}
-              <button
-                className="btn-icon material-icons-outlined"
-                onClick={() => setShowColorPalette((value) => !value)}
-              >
-                color_lens
-              </button>
-              {showColorPalette && (
-                <div className="bg-color-palette">
-                  <ul className="bg-color-list">
-                    {bgColorPalette.map((item) => (
-                      <li
-                        key={item.id}
-                        className={`avatar avatar-icon avatar-xs bg-${item.bgColor}`}
-                        onClick={() => changeNoteBgColor(note, item.bgColor)}
-                      >
-                        {item.bgColor === note.bgColor && (
-                          <i className="material-icons">check</i>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {/* <button className="btn-icon material-icons-outlined">
-                image
-              </button>
-              <button className="btn-icon material-icons-outlined">
-                check_box
-              </button> */}
-              <button
-                className="btn-icon material-icons-outlined"
-                disabled={!id}
-                onClick={() => duplicateNote(note)}
-              >
-                content_copy
-              </button>
-              <button
-                className="btn-icon material-icons-outlined"
-                disabled={!id}
-                onClick={() => updateNoteStatus(note, "archive")}
-              >
-                archive
-              </button>
-              <button
-                className="btn-icon material-icons-outlined"
-                disabled={!id}
-                onClick={() => updateNoteStatus(note, "trash")}
-              >
-                delete
-              </button>
-            </div>
+            <NoteFooterIcons note={note} setNote={setNote} id={id} />
+
             <div className="note-action-buttons">
-              <button
-                className="btn-link btn-link-primary txt-bold p-2"
-                disabled={noteUpdateLoading}
-                onClick={saveNote}
-              >
-                {noteUpdateLoading ? "Saving..." : "Save"}
-              </button>
+              {!location.pathname.includes("trash") && (
+                <button
+                  className="btn-link btn-link-primary txt-bold p-2"
+                  disabled={noteUpdateLoading}
+                  onClick={saveNote}
+                >
+                  {noteUpdateLoading ? "Saving..." : "Save"}
+                </button>
+              )}
               <Link
                 disabled={noteUpdateLoading}
-                to="/notes"
+                to={location?.state?.background?.pathname ?? "/notes"}
                 className="link btn-link btn-close txt-bold p-2"
               >
                 Close
