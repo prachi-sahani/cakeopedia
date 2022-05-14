@@ -46,7 +46,7 @@ export function NoteFooterIcons({ note, setNote, id }) {
   function deleteNote(selectedNote) {
     updateNote(
       notes.filter((item) => selectedNote.id !== item.id),
-      "Note deleted forever!",
+      "Note permanently deleted!",
       true
     );
   }
