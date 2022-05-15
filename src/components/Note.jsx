@@ -69,7 +69,7 @@ export function Note({ note }) {
   function deleteNote(selectedNote) {
     updateNote(
       notes.filter((item) => item.id !== selectedNote.id),
-      "Note deleted forever!",
+      "Note permanently deleted!",
       false
     );
   }
@@ -104,12 +104,14 @@ export function Note({ note }) {
         {location.pathname === "/notes/trash" ? (
           <div className="action-icons">
             <button
+              title="Restore"
               className="btn-icon material-icons-outlined"
               onClick={() => updateNoteStatus("trash", "restored from")}
             >
               restore_from_trash
             </button>
             <button
+              title="Delete permanently"
               className="btn-icon material-icons-outlined"
               onClick={() => deleteNote(note)}
             >
@@ -119,6 +121,7 @@ export function Note({ note }) {
         ) : (
           <div className="action-icons">
             <button
+              title="New label"
               className="btn-icon material-icons-outlined"
               onClick={() => {
                 setShowLabelsDialog((value) => !value);
@@ -128,6 +131,7 @@ export function Note({ note }) {
             </button>
             {showLabelsDialog && <LabelsDialog note={note} editMode={false} />}
             <button
+              title="Change card color"
               className="btn-icon material-icons-outlined"
               onClick={() => setShowColorPalette((value) => !value)}
             >
@@ -152,6 +156,7 @@ export function Note({ note }) {
             )}
             <button
               className="btn-icon material-icons-outlined"
+              title="Duplicate"
               onClick={() => duplicateNote()}
             >
               content_copy
@@ -159,6 +164,7 @@ export function Note({ note }) {
 
             {note.archive && (
               <button
+                title="Unarchive"
                 className="btn-icon material-icons-outlined"
                 onClick={() => updateNoteStatus("archive", "restored from")}
               >
@@ -167,6 +173,7 @@ export function Note({ note }) {
             )}
             {!note.archive && (
               <button
+                title="Archive"
                 className="btn-icon material-icons-outlined"
                 onClick={() => updateNoteStatus("archive", "sent to")}
               >
@@ -174,6 +181,7 @@ export function Note({ note }) {
               </button>
             )}
             <button
+              title="Trash"
               className="btn-icon material-icons-outlined"
               onClick={() => updateNoteStatus("trash", "sent to")}
             >

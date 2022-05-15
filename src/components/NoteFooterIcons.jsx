@@ -58,11 +58,13 @@ export function NoteFooterIcons({ note, setNote, id }) {
     <div className="note-action-icons">
       <button
         className="btn-icon material-icons-outlined"
+        title="Restore"
         onClick={() => updateNoteStatus(note, "trash", "restored from")}
       >
         restore_from_trash
       </button>
       <button
+        title="Delete permanently"
         className="btn-icon material-icons-outlined"
         onClick={() => deleteNote(note)}
       >
@@ -72,6 +74,7 @@ export function NoteFooterIcons({ note, setNote, id }) {
   ) : (
     <div className="note-action-icons">
       <button
+        title="New label"
         className="btn-icon material-icons-outlined"
         onClick={() => setShowLabelsDialog((value) => !value)}
       >
@@ -81,6 +84,7 @@ export function NoteFooterIcons({ note, setNote, id }) {
         <LabelsDialog note={note} editMode={true} setNote={setNote} />
       )}
       <button
+        title="Change card color"
         className="btn-icon material-icons-outlined"
         onClick={() => setShowColorPalette((value) => !value)}
       >
@@ -105,6 +109,7 @@ export function NoteFooterIcons({ note, setNote, id }) {
       )}
       <button
         className="btn-icon material-icons-outlined"
+        title="Duplicate"
         disabled={!id}
         onClick={() => duplicateNote(note)}
       >
@@ -112,6 +117,7 @@ export function NoteFooterIcons({ note, setNote, id }) {
       </button>
       {note.archive && (
         <button
+          title="Unarchive"
           className="btn-icon material-icons-outlined"
           disabled={!id}
           onClick={() => updateNoteStatus(note, "archive", "restored from")}
@@ -121,6 +127,7 @@ export function NoteFooterIcons({ note, setNote, id }) {
       )}
       {!note.archive && (
         <button
+          title="Archive"
           className="btn-icon material-icons-outlined"
           disabled={!id}
           onClick={() => updateNoteStatus(note, "archive", "sent to")}
@@ -129,6 +136,7 @@ export function NoteFooterIcons({ note, setNote, id }) {
         </button>
       )}
       <button
+        title="Trash"
         className="btn-icon material-icons-outlined"
         disabled={!id}
         onClick={() => updateNoteStatus(note, "trash", "sent to")}
