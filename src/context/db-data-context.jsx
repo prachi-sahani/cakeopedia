@@ -1,11 +1,12 @@
 import { createContext, useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { addUserNote, getUserNotes } from "../utilities/server-request";
 import { useMessageHandling } from "./message-handling-context";
 const DBdataContext = createContext();
 
 function DBdataProvider({ children }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [notes, setNotes] = useState(null);
   const [labels, setLabels] = useState(null);
   const [notesLoading, setNotesLoading] = useState(false);
@@ -41,7 +42,7 @@ function DBdataProvider({ children }) {
       showSnackbar(msg);
       setNotes(notesList);
       if (closeNote) {
-        navigate("/notes");
+        navigate(location?.state?.background?.pathname ?? "/notes");
       }
     } catch (err) {
       showSnackbar("Some error occurred. Try Again!");

@@ -35,6 +35,7 @@ export function Navbar() {
       ) && (
         <div className="navbar-action">
           <button
+            title={gridView ? "List view" : "Grid view"}
             className="btn-icon btn-outline-primary material-icons-outlined view-toggle-icon"
             onClick={() => setGridView((value) => !value)}
           >
@@ -42,6 +43,7 @@ export function Navbar() {
           </button>
           {authToken ? (
             <button
+              title="Logout"
               className="link btn-icon btn-outline-primary material-icons"
               onClick={logout}
             >
@@ -49,6 +51,7 @@ export function Navbar() {
             </button>
           ) : (
             <Link
+              title="Login"
               to="/login"
               className="link btn-icon btn-outline-primary material-icons"
             >

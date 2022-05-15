@@ -68,7 +68,7 @@ export function LabelsDialog({ note, editMode, setNote }) {
 
   function updateLabelsList(selectedNote, value) {
     if (filteredLabels.length > 0) {
-      showSnackbar(`${value} label already exists!`);
+      showSnackbar(`"${value}" label already exists!`);
     } else {
       if (editMode) {
         // update note labels - edit/add note page
