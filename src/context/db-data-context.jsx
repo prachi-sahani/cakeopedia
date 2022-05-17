@@ -9,6 +9,7 @@ function DBdataProvider({ children }) {
   const location = useLocation();
   const [notes, setNotes] = useState(null);
   const [labels, setLabels] = useState(null);
+  const [searchFilter, setSearchFilter] = useState("");
   const [notesLoading, setNotesLoading] = useState(false);
   const [noteUpdateLoading, setNoteUpdateLoading] = useState(false);
   const { showSnackbar, setShowErrorPage } = useMessageHandling();
@@ -93,7 +94,9 @@ function DBdataProvider({ children }) {
         labels,
         updateUserLabels,
         setLabels,
-        updateNoteAndLabel
+        updateNoteAndLabel,
+        searchFilter,
+        setSearchFilter,
       }}
     >
       {children}
