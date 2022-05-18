@@ -19,16 +19,16 @@ export function ZeroNotesPage() {
   }
   return (
     <div className="my-5 txt-center txt-gray">
-      <button
+      <div
         onClick={() =>
           navigate(redirectTo ?? location.pathname, {
             state: { background: location },
           })
         }
-        className="btn-link h1 material-icons-outlined"
+        className="btn txt-gray h1 material-icons-outlined"
       >
         {icon}
-      </button>
+      </div>
       <h1 className="heading h2">{message}</h1>
     </div>
   );

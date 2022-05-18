@@ -1,6 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { addUserNote, getUserNotes } from "../utilities/server-request";
+import { useAuth } from "./authorization-context";
 import { useMessageHandling } from "./message-handling-context";
 const DBdataContext = createContext();
 
@@ -9,9 +10,16 @@ function DBdataProvider({ children }) {
   const location = useLocation();
   const [notes, setNotes] = useState(null);
   const [labels, setLabels] = useState(null);
+  const [searchFilter, setSearchFilter] = useState("");
   const [notesLoading, setNotesLoading] = useState(false);
   const [noteUpdateLoading, setNoteUpdateLoading] = useState(false);
   const { showSnackbar, setShowErrorPage } = useMessageHandling();
+  const { authToken } = useAuth();
+
+  useEffect(() => {
+    setNotes(null);
+  }, [authToken]);
+  
   async function getNotes() {
     try {
       setNotesLoading(true);
@@ -87,13 +95,16 @@ function DBdataProvider({ children }) {
       value={{
         getNotes,
         notes,
+        setNotes,
         notesLoading,
         updateNote,
         noteUpdateLoading,
         labels,
         updateUserLabels,
         setLabels,
-        updateNoteAndLabel
+        updateNoteAndLabel,
+        searchFilter,
+        setSearchFilter,
       }}
     >
       {children}

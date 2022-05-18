@@ -8,7 +8,7 @@ import { ZeroNotesPage } from "./ZeroNotesPage";
 
 export function ViewNotes({ sortBy }) {
   const { label } = useParams();
-  const { getNotes, notes, notesLoading } = useDBdata();
+  const { getNotes, notes, notesLoading, searchFilter } = useDBdata();
   const [notesToDisplay, setNotesToDisplay] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,20 +32,45 @@ export function ViewNotes({ sortBy }) {
     let filteredNotes = [];
     if (location.pathname.includes("archive")) {
       filteredNotes = notes?.filter(
-        (element) => !element.trash && element.archive
+        (element) =>
+          !element.trash &&
+          element.archive &&
+          (element.title.toLowerCase().includes(searchFilter) ||
+            element.description
+              .toLowerCase()
+              .includes(searchFilter.toLowerCase()))
       );
     } else if (location.pathname.includes("trash")) {
-      filteredNotes = notes?.filter((element) => element.trash);
+      filteredNotes = notes?.filter(
+        (element) =>
+          element.trash &&
+          (element.title.toLowerCase().includes(searchFilter) ||
+            element.description
+              .toLowerCase()
+              .includes(searchFilter.toLowerCase()))
+      );
     } else if (location.pathname.includes("label")) {
       if (label) {
         filteredNotes = notes?.filter(
           (element) =>
-            !element.trash && !element.archive && element.labels.includes(label)
+            !element.trash &&
+            !element.archive &&
+            element.labels.includes(label) &&
+            (element.title.toLowerCase().includes(searchFilter.toLowerCase()) ||
+              element.description
+                .toLowerCase()
+                .includes(searchFilter.toLowerCase()))
         );
       }
     } else {
       filteredNotes = notes?.filter(
-        (element) => !element.trash && !element.archive
+        (element) =>
+          !element.trash &&
+          !element.archive &&
+          (element.title.toLowerCase().includes(searchFilter.toLowerCase()) ||
+            element.description
+              .toLowerCase()
+              .includes(searchFilter.toLowerCase()))
       );
     }
     setNotesToDisplay(
@@ -55,7 +80,7 @@ export function ViewNotes({ sortBy }) {
           : a.updatedOn - b.updatedOn;
       })
     );
-  }, [notes, location]);
+  }, [notes, location, searchFilter]);
 
   return (
     <main className="view-notes mb-5">
