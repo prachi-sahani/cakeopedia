@@ -33,7 +33,7 @@ export function Note({ note }) {
         { ...note, id: uuid(), updatedOn: new Date(), createdOn: new Date() },
       ],
       "Duplicate note created!",
-      true
+      false
     );
   }
 
