@@ -1,6 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { addUserNote, getUserNotes } from "../utilities/server-request";
+import { useAuth } from "./authorization-context";
 import { useMessageHandling } from "./message-handling-context";
 const DBdataContext = createContext();
 
@@ -13,6 +14,12 @@ function DBdataProvider({ children }) {
   const [notesLoading, setNotesLoading] = useState(false);
   const [noteUpdateLoading, setNoteUpdateLoading] = useState(false);
   const { showSnackbar, setShowErrorPage } = useMessageHandling();
+  const { authToken } = useAuth();
+
+  useEffect(() => {
+    setNotes(null);
+  }, [authToken]);
+  
   async function getNotes() {
     try {
       setNotesLoading(true);
@@ -88,6 +95,7 @@ function DBdataProvider({ children }) {
       value={{
         getNotes,
         notes,
+        setNotes,
         notesLoading,
         updateNote,
         noteUpdateLoading,
