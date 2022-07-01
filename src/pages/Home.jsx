@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import "../stylesheets/home.css";
-
+import { useAuth } from "../context/authorization-context";
 export function Home() {
+  const { authToken } = useAuth();
+
   return (
     <div className="container">
       <img
@@ -20,7 +22,7 @@ export function Home() {
           all your orders at one place.
         </p>
         <Link to="/notes" className="link btn-basic btn-primary">
-          Try Cakeopedia, it's free!
+          {authToken ? "Take notes" : "Try Cakeopedia, it's free!"}
         </Link>
       </div>
     </div>
